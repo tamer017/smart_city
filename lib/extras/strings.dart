@@ -93,5 +93,17 @@ class Strings {
       "ENG": "Back to all services",
       "ARB": "الرجوع إلى جميع الخدمات"
     },
+    "Air conditioning": {"ENG": "Air conditioning", "ARB": "التكييف"},
+    "Camera": {"ENG": "Camera", "ARB": "الكاميرا"},
+    "Lamp": {"ENG": "Lamp", "ARB": "المصباح"},
+    "Door": {"ENG": "Door", "ARB": "الباب"},
+    "Microwave": {"ENG": "Microwave", "ARB": "الميكروويف"},
+    "Heater": {"ENG": "Heater", "ARB": "المدفأة"},
+    "Home Assistant": {"ENG": "Home Assistant", "ARB": "مساعد المنزل"},
+    "Washing machine": {"ENG": "Washing machine", "ARB": "الغسالة"},
+    "Television": {"ENG": "Television", "ARB": "التلفاز"},
+    "window": {"ENG": "window", "ARB": "النافذة"},
+    "Fan": {"ENG": "Fan", "ARB": "المروحة"},
+    "Vacuum robot": {"ENG": "Vacuum robot", "ARB": "المكنسةالالية"},
   };
 }

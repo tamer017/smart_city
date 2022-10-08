@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_city/extras/strings.dart';
+import 'package:smart_city/extras/data.dart';
+import 'package:smart_city/model/device.dart';
 import 'package:smart_city/providers/language_provider.dart';
 import 'package:smart_city/providers/service_provider.dart';
 
 class HomeContainer extends StatelessWidget {
   final double widthBlock;
   final double heightBlock;
-  const HomeContainer(
-      {Key? key, required this.widthBlock, required this.heightBlock})
+
+  HomeContainer({Key? key, required this.widthBlock, required this.heightBlock})
       : super(key: key);
 
   @override
@@ -29,39 +31,21 @@ class HomeContainer extends StatelessWidget {
             flex: 9,
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: widthBlock * 5),
-              child: GridView(
+              child: GridView.builder(
+                itemCount: Data
+                    .apartment
+                    .rooms[Provider.of<ServiceProvider>(context, listen: true)
+                        .room_number]
+                    .devices
+                    .length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, mainAxisExtent: heightBlock * 22.5),
-                children: [
-                  buildContainer(
-                      heightBlock,
-                      widthBlock,
-                      "smart-house.png",
-                      Strings.strings["Home"][
-                          Provider.of<LanguageProvider>(context, listen: true)
-                              .language]),
-                  buildContainer(
-                      heightBlock,
-                      widthBlock,
-                      "garage.png",
-                      Strings.strings["Parking"][
-                          Provider.of<LanguageProvider>(context, listen: true)
-                              .language]),
-                  buildContainer(
-                      heightBlock,
-                      widthBlock,
-                      "clipboard.png",
-                      Strings.strings["Suggestion"][
-                          Provider.of<LanguageProvider>(context, listen: true)
-                              .language]),
-                  buildContainer(
-                      heightBlock,
-                      widthBlock,
-                      "electronic-voting.png",
-                      Strings.strings["Voting"][
-                          Provider.of<LanguageProvider>(context, listen: true)
-                              .language]),
-                ],
+                itemBuilder: (context, index) => buildContainer(
+                  context,
+                  heightBlock,
+                  widthBlock,
+                  index,
+                ),
               ),
             ),
           ),
@@ -70,14 +54,22 @@ class HomeContainer extends StatelessWidget {
     );
   }
 
-  Container buildContainer(heightBlock, widthBlock, image, name) {
+  Container buildContainer(context, heightBlock, widthBlock, index) {
+    Device device = Data
+        .apartment
+        .rooms[Provider.of<ServiceProvider>(context, listen: true).room_number]
+        .devices[index];
+    String? name = device.name;
+    String? image = device.image;
     return Container(
       padding: EdgeInsets.symmetric(
           vertical: heightBlock * 1, horizontal: widthBlock * 1),
       child: Card(
         elevation: 1,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(
+            20.0,
+          ),
         ),
         shadowColor: Colors.yellowAccent, // Change th
         child: Padding(
@@ -93,7 +85,7 @@ class HomeContainer extends StatelessWidget {
                       margin:
                           EdgeInsets.symmetric(horizontal: widthBlock * 1.25),
                       child: SizedBox(
-                        child: Image.asset(image),
+                        child: Image.asset(image!),
                         height: heightBlock * 6,
                         width: widthBlock * 10,
                       ),
@@ -105,11 +97,34 @@ class HomeContainer extends StatelessWidget {
                 flex: 4,
               ),
               Expanded(
-                child: Text("5000"),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: widthBlock * 1.25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        name!,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 flex: 2,
               ),
               Expanded(
-                child: Text("5000"),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: widthBlock * 1.25),
+                  child: Row(
+                    children: [
+                      Text(device.on! ? "ON" : "OFF"),
+                      Switch(value: device.on!, onChanged: (val) {}),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                ),
                 flex: 2,
               ),
             ],
@@ -121,49 +136,60 @@ class HomeContainer extends StatelessWidget {
   }
 
   buildRooms(heightBlock, widthBlock, BuildContext context) {
-    List rooms = [
-      "Kitchen",
-      "Living Room",
-      "Bedroom 1",
-      "Bedroom 2",
-      "Bedroom 3",
-      "Bathroom 1",
-      "Bathroom 2",
-      "Bathroom 3",
-      "Dining Room",
-    ];
     return SizedBox(
       width: widthBlock * 90,
       child: Card(
-        elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        shadowColor: Colors.yellowAccent, // Change this
-        color: Color.fromRGBO(16, 28, 66, 1),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: rooms
-              .map(
-                (room) => Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    Strings.strings[room][
-                        Provider.of<LanguageProvider>(context, listen: true)
-                            .language],
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  margin: EdgeInsets.symmetric(
-                    horizontal: widthBlock * 2.5,
-                  ),
+          elevation: 1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          shadowColor: Colors.yellowAccent, // Change this
+          color: Color.fromRGBO(16, 28, 66, 1),
+          child: ListView.builder(
+            itemCount: Data.apartment.rooms.length,
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: () => Provider.of<ServiceProvider>(context, listen: false)
+                  .setRoomNumber(index),
+              child: Container(
+                alignment: Alignment.center,
+                child: Provider.of<ServiceProvider>(context, listen: true)
+                            .room_number ==
+                        index
+                    ? Text(
+                        Strings.strings[Data.apartment.getRoomNames()[index]][
+                            Provider.of<LanguageProvider>(context, listen: true)
+                                .language],
+                        style: TextStyle(
+                          color: Colors.transparent, // Step 2 SEE HERE
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, -5),
+                              color: Color.fromRGBO(102, 205, 229, 1),
+                            ),
+                          ],
+                          decoration: TextDecoration.underline,
+                          decorationColor: Color.fromRGBO(102, 205, 229, 1),
+                          decorationThickness: 4,
+                          decorationStyle: TextDecorationStyle.solid,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : Text(
+                        Strings.strings[Data.apartment.getRoomNames()[index]][
+                            Provider.of<LanguageProvider>(context, listen: true)
+                                .language],
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                margin: EdgeInsets.symmetric(
+                  horizontal: widthBlock * 2.5,
                 ),
-              )
-              .toList(),
-        ),
-      ),
+              ),
+            ),
+            scrollDirection: Axis.horizontal,
+          )),
     );
   }
 

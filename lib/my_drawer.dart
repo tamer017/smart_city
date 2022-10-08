@@ -87,15 +87,52 @@ class MyDrawer extends StatelessWidget {
                     Radius.circular(widthBlock * 2.5),
                   ),
                 ),
-                trailing: Switch(
-                  value: Provider.of<LanguageProvider>(context, listen: true)
-                          .language !=
-                      "ENG",
-                  onChanged: (value) {
-                    Provider.of<LanguageProvider>(context, listen: false)
-                        .changeLanguage();
-                  },
-                  activeTrackColor: Color.fromRGBO(102, 205, 229, 1),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary:
+                            Provider.of<LanguageProvider>(context, listen: true)
+                                        .language ==
+                                    "ENG"
+                                ? Color.fromRGBO(102, 205, 229, 1)
+                                : const Color.fromRGBO(16, 28, 66, 1),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            bottomLeft: Radius.circular(5),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Provider.of<LanguageProvider>(context, listen: false)
+                            .changeLanguage();
+                      },
+                      child: Image.asset("united-kingdom.png"),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary:
+                            Provider.of<LanguageProvider>(context, listen: true)
+                                        .language !=
+                                    "ENG"
+                                ? Color.fromRGBO(102, 205, 229, 1)
+                                : const Color.fromRGBO(16, 28, 66, 1),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(5),
+                            bottomRight: Radius.circular(5),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Provider.of<LanguageProvider>(context, listen: false)
+                            .changeLanguage();
+                      },
+                      child: Image.asset("saudi-arabia.png"),
+                    )
+                  ],
                 ),
                 leading: Icon(
                   Icons.language,

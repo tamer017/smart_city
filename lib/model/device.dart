@@ -1,6 +1,11 @@
+import 'package:flutter/cupertino.dart';
+
 class Device {
+  String? name;
   bool? on;
   double? timer;
   double? temp;
-  Device({this.on, this.timer, this.temp});
+  String? image;
+  Device({required this.on, this.timer, this.temp, required this.name,required this.image});
+  
 }

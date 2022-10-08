@@ -7,4 +7,10 @@ class ServiceProvider extends ChangeNotifier {
     main_service_number = num;
     notifyListeners();
   }
+
+  int room_number = 0;
+  void setRoomNumber(int num) {
+    room_number = num;
+    notifyListeners();
+  }
 }
